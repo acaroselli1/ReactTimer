@@ -6,7 +6,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Timer startCount={500}/>
+        <Timer startCount={0}/>
       </div>
     );
   }
