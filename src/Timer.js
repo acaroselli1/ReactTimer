@@ -51,17 +51,16 @@ export default class Time extends Component {
               justifyContent: "center",
               position: "absolute",
               height: "320x",
-              width: "320px"
+              width: "320px",
             }}
           >
             <CircularProgressbar
               counterClockwise="false"
               percentage={this.state.resetClicked ? 0 : (this.state.count / this.state.inputValue) * 100}
               styles={{
-                path: {
-                  stroke: `rgba(62, 152, 199)`
-                },
-                text: { fill: "#f88", fontSize: "16px" }
+                path:{
+                  stroke:'navy'
+                }
               }}
             />
           </div>
@@ -204,6 +203,7 @@ export default class Time extends Component {
       count:0,
       resetClicked:true
     });
+   
   };
 
   setTimer = e => {
@@ -214,6 +214,7 @@ export default class Time extends Component {
   };
 
   handleInput = e => {
+    this.silenceAirHorn();
     this.setState({
       inputValue: e.target.value
     });
