@@ -186,6 +186,7 @@ export default class Time extends Component {
 
   stop = () => {
     clearInterval(this.test);
+    document.getElementById("loneRanger").pause();
   };
 
   reset = () => {
