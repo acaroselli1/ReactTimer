@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import Odometer from "react-odometerjs";
 import "odometer/themes/odometer-theme-digital.css";
 import { Button, Input } from "@material-ui/core";
+import CircularProgressbar from "react-circular-progressbar";
+import song from './loneRanger.mp3';
+import airHorn from './airHorn.mp3';
 
 export default class Time extends Component {
   // default values
@@ -23,11 +26,45 @@ export default class Time extends Component {
       <div
         style={{
           height: "100vh",
+          width: "100vw",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center"
+          justifyContent: "center",
+          position: "relative"
         }}
       >
+        <div
+          style={{
+            height: "100vh",
+            width: "100vw",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "absolute"
+          }}
+        >
+          <div
+            style={{
+              flexDirection: "column",
+              justifyContent: "center",
+              position: "absolute",
+              height: "575x",
+              width: "575px"
+            }}
+          >
+            <CircularProgressbar
+              counterClockwise="false"
+              percentage={(this.state.count / this.state.inputValue) * 100}
+              styles={{
+                path: {
+                  stroke: `rgba(62, 152, 199)`
+                },
+                text: { fill: "#f88", fontSize: "16px" }
+              }}
+            />
+          </div>
+        </div>
         <div
           style={{
             display: "flex",
@@ -35,12 +72,21 @@ export default class Time extends Component {
             justifyContent: "center"
           }}
         >
+          <audio id="loneRanger" id="loneRanger" src={song} />
+          <audio id="airHorn" id="airHorn" src={airHorn} loop/>
           <Input
             onChange={this.handleInput}
             value={this.state.inputValue}
-            placeholder="Timer Value"
+            placeholder="Time in Seconds"
           />
-          <Button onClick={this.setTimer}>Set Timer</Button>
+          <Button
+            raised={true}
+            color="primary"
+            variant="contained"
+            onClick={this.setTimer}
+          >
+            Set Timer (seconds)
+          </Button>
         </div>
         <h1 style={{ fontFamily: "Orbitron, sans-serif" }}>
           Current Count:{" "}
@@ -53,10 +99,20 @@ export default class Time extends Component {
             justifyContent: "center"
           }}
         >
-          <Button color="primary" variant="outlined" onClick={this.start}>
+          <Button
+            raised={true}
+            color="primary"
+            variant="contained"
+            onClick={this.start}
+          >
             Start
           </Button>
-          <Button color="secondary" variant="outlined" onClick={this.stop}>
+          <Button
+            raised={true}
+            color="secondary"
+            variant="contained"
+            onClick={this.stop}
+          >
             Stop
           </Button>
         </div>
@@ -67,7 +123,29 @@ export default class Time extends Component {
             justifyContent: "center"
           }}
         >
-          <Button onClick={this.reset}>Reset</Button>
+          <Button
+            style={{ backgroundColor: "black", color: "white" }}
+            raised={true}
+            onClick={this.reset}
+          >
+            Reset
+          </Button>
+         
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center"
+          }}
+        >
+          <Button
+            raised={true}
+            onClick={this.silenceAirHorn}
+          >
+            Silence Air Horn 
+          </Button>
+         
         </div>
       </div>
     );
@@ -85,11 +163,21 @@ export default class Time extends Component {
     window.removeEventListener("keydown", this.handleEnterPressed);
   }
 
+  componentDidUpdate(){
+    if (this.state.count ===0){
+      document.getElementById("loneRanger").pause();
+      if (this.state.clickCount > 0){
+        document.getElementById("airHorn").play();
+      }
+    }
+  }
+
   start = () => {
+    document.getElementById("loneRanger").play();
     if (this.state.clickCount === 0) {
       this.test = setInterval(() => {
         this.setState(previousState => ({ count: previousState.count - 1 }));
-      }, 100);
+      }, 1000);
       this.setState(previousState => ({
         clickCount: previousState.clickCount + 1
       }));
@@ -109,8 +197,7 @@ export default class Time extends Component {
 
   setTimer = e => {
     this.setState({
-      count: this.state.inputValue,
-      inputValue: ""
+      count: this.state.inputValue
     });
   };
 
@@ -120,9 +207,13 @@ export default class Time extends Component {
     });
   };
 
-  handleEnterPressed=(e) => {
+  handleEnterPressed = e => {
     if (e.key == "Enter") {
       this.setTimer();
     }
+  };
+
+  silenceAirHorn(){
+    document.getElementById("airHorn").pause();
   }
 }
