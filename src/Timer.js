@@ -17,7 +17,8 @@ export default class Time extends Component {
     this.state = {
       count: 1,
       clickCount: 0,
-      inputValue: ""
+      inputValue: "",
+      resetClicked:false
     };
   }
 
@@ -49,13 +50,13 @@ export default class Time extends Component {
               flexDirection: "column",
               justifyContent: "center",
               position: "absolute",
-              height: "400x",
-              width: "400px"
+              height: "320x",
+              width: "320px"
             }}
           >
             <CircularProgressbar
               counterClockwise="false"
-              percentage={(this.state.count / this.state.inputValue) * 100}
+              percentage={this.state.resetClicked ? 0 : (this.state.count / this.state.inputValue) * 100}
               styles={{
                 path: {
                   stroke: `rgba(62, 152, 199)`
@@ -78,23 +79,22 @@ export default class Time extends Component {
           <Input
             onChange={this.handleInput}
             value={this.state.inputValue}
-            placeholder="Time in Seconds"
-            style={{marginBottom:10}}
+            placeholder="Time(sec)"
+            style={{marginBottom:10,width:100,fontFamily: "Orbitron, sans-serif",color:'red'}}
           /><br/>
           <Button
             raised={true}
-            color="primary"
-            variant="contained"
+            style={{ backgroundColor: "black", color: "white" }}
             onClick={this.setTimer}
           >
-            Set Timer (seconds)
+            Set Timer
           </Button>
           </div>
         </div>
-        <h2 style={{ fontFamily: "Orbitron, sans-serif" }}>
+        <h3 style={{ fontFamily: "Orbitron, sans-serif" }}>
           Current Count:{" "}
           <Odometer value={this.state.count >= 0 ? this.state.count : "0"} />
-        </h2>
+        </h3>
         <div
           style={{
             display: "flex",
@@ -107,6 +107,7 @@ export default class Time extends Component {
             color="primary"
             variant="contained"
             onClick={this.start}
+            disabled={this.state.count == 0 && this.state.clickCount === 0 ? true: false}
           >
             Start
           </Button>
@@ -130,6 +131,7 @@ export default class Time extends Component {
             style={{ backgroundColor: "black", color: "white" }}
             raised={true}
             onClick={this.reset}
+            disabled={this.state.count === 0 ? true: false}
           >
             Reset
           </Button>
@@ -169,6 +171,7 @@ export default class Time extends Component {
   componentDidUpdate(){
     if (this.state.count ===0){
       document.getElementById("loneRanger").pause();
+      this.stop();
       if (this.state.clickCount > 0){
         document.getElementById("airHorn").play();
       }
@@ -176,15 +179,17 @@ export default class Time extends Component {
   }
 
   start = () => {
+    this.setState({
+      resetClicked:false
+    });
+
     document.getElementById("loneRanger").play();
-    if (this.state.clickCount === 0) {
       this.test = setInterval(() => {
         this.setState(previousState => ({ count: previousState.count - 1 }));
       }, 1000);
       this.setState(previousState => ({
         clickCount: previousState.clickCount + 1
       }));
-    }
   };
 
   stop = () => {
@@ -195,11 +200,14 @@ export default class Time extends Component {
   reset = () => {
     this.setState({
       clickCount: 0,
-      count: this.props.startCount
+      inputValue: 0,
+      count:0,
+      resetClicked:true
     });
   };
 
   setTimer = e => {
+    document.getElementById("airHorn").pause();
     this.setState({
       count: this.state.inputValue
     });
