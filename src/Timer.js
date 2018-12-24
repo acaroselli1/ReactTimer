@@ -49,8 +49,8 @@ export default class Time extends Component {
               flexDirection: "column",
               justifyContent: "center",
               position: "absolute",
-              height: "575x",
-              width: "575px"
+              height: "400x",
+              width: "400px"
             }}
           >
             <CircularProgressbar
@@ -74,11 +74,13 @@ export default class Time extends Component {
         >
           <audio id="loneRanger" id="loneRanger" src={song} />
           <audio id="airHorn" id="airHorn" src={airHorn} loop/>
+          <div>
           <Input
             onChange={this.handleInput}
             value={this.state.inputValue}
             placeholder="Time in Seconds"
-          />
+            style={{marginBottom:10}}
+          /><br/>
           <Button
             raised={true}
             color="primary"
@@ -87,11 +89,12 @@ export default class Time extends Component {
           >
             Set Timer (seconds)
           </Button>
+          </div>
         </div>
-        <h1 style={{ fontFamily: "Orbitron, sans-serif" }}>
+        <h2 style={{ fontFamily: "Orbitron, sans-serif" }}>
           Current Count:{" "}
           <Odometer value={this.state.count >= 0 ? this.state.count : "0"} />
-        </h1>
+        </h2>
         <div
           style={{
             display: "flex",
